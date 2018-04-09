@@ -20,7 +20,7 @@ function RCP_NextPay_GET_CURL($addres)
 function RCP_nextpay_Dashboard()
 {
 //   global $wpdb;
-  $contentpage= RCP_NextPay_GET_CURL('https://api.nextpay.org/account/signup/');
+  $contentpage= RCP_NextPay_GET_CURL('https://.nextpay.ir');
   echo $contentpage;
 }
 
@@ -412,6 +412,8 @@ if (!class_exists('RCP_nextpay') ) {
 		}
 		
 		public function nextpay_Verify() {
+		
+			global $rcp_options;
 			
 			if (!isset($_GET['gateway']))
 				return;
@@ -421,6 +423,7 @@ if (!class_exists('RCP_nextpay') ) {
 			
 			$trans_id = isset($_POST['trans_id']) ? $_POST['trans_id'] : False;
 			$order_id = isset($_POST['order_id']) ? $_POST['order_id'] : False;
+			
 			
 			if ( !$trans_id || !$order_id)
 				return;
@@ -465,12 +468,13 @@ if (!class_exists('RCP_nextpay') ) {
 				$GLOBALS['nextpay_new'] = $new_payment;
 				global $new;
 				$new = $new_payment;
+
 				if ($new_payment == 1) {
 					
 					//Start of NextPay
-					$api_key = isset($options['api_key']) ? $options['api_key'] : '';
+					$api_key = isset($rcp_options['api_key']) ? $rcp_options['api_key'] : '';
 					$amount = intval($amount);
-					if ($options['currency'] == 'ریال' || $options['currency'] == 'RIAL' || $options['currency'] == 'ریال ایران' || $options['currency'] == 'Iranian Rial (&#65020;)')
+					if ($rcp_options['currency'] == 'ریال' || $rcp_options['currency'] == 'RIAL' || $rcp_options['currency'] == 'ریال ایران' || $rcp_options['currency'] == 'Iranian Rial (&#65020;)')
 						$amount = $amount/10;
 					
 					
@@ -674,13 +678,13 @@ if (!class_exists('RCP_nextpay') ) {
 			
 				$payment_status = isset($nextpay_payment_data['payment_status']) ? $nextpay_payment_data['payment_status'] : '';
 				$transaction_id = isset($nextpay_payment_data['transaction_id']) ? $nextpay_payment_data['transaction_id'] : '';
-				$fault = isset($nextpay_payment_data['fault']) ? $this->Fault($nextpay_payment_data['fault']) : '';
+				$fault = isset($nextpay_payment_data['fault']) ? $this->Fault_Get($nextpay_payment_data['fault']) : '';
 			}
 			
 			$message = '';
 			
 			if ($payment_status == 'completed') {
-				$message = '<br/>'.__( 'پرداخت با موفقیت انجام شد . کد تراکنش : ', 'rcp_nextpay' ).$transaction_id.'<br/>';
+				$message = '<br/>'.__( 'پرداخت با موفقیت انجام شد .', 'rcp_nextpay' ).'<p>کد تراکنش : </p><p style="color:green;">'.$transaction_id.'</p><br/>';
 			}
 			
 			if ($payment_status == 'cancelled') {
