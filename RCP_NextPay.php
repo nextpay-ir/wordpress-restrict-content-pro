@@ -404,7 +404,7 @@ if (!class_exists('RCP_nextpay') ) {
 			    }
 			    else
 			    {
-				wp_die( sprintf(__('متاسفانه پرداخت به دلیل خطای زیر امکان پذیر نمی باشد . <br/><b> %s </b>', 'nextpay'), $this->Fault($result->code)) );
+				wp_die( sprintf(__('متاسفانه پرداخت به دلیل خطای زیر امکان پذیر نمی باشد . <br/><b> %s </b>', 'nextpay'), $this->Fault_Get($result->code)) );
 				exit();
 			    }
 			}catch (Exception $e) { echo 'Error'. $e->getMessage();  }
